@@ -1,0 +1,43 @@
+name: ci
+
+# Tap this checkout, audit the formula, install from main. The install of the
+# release tarball runs only once the release workflow has written a real
+# sha256, so this stays green between creating the tap and the first release.
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  formula:
+    name: formula
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Tap this checkout
+        run: |
+          tap_dir="$(brew --repository)/Library/Taps/0prashantyadav0/homebrew-nekoshell"
+          mkdir -p "$(dirname "$tap_dir")"
+          ln -s "$GITHUB_WORKSPACE" "$tap_dir"
+          brew tap
+          brew tap-info 0PrashantYadav0/nekoshell
+      - name: Audit
+        run: brew audit --strict --formula 0PrashantYadav0/nekoshell/nekoshell
+      - name: Install from main and test
+        run: |
+          brew install --HEAD 0PrashantYadav0/nekoshell/nekoshell
+          brew test 0PrashantYadav0/nekoshell/nekoshell
+          nekoshell version
+          brew uninstall nekoshell
+      - name: Install the release, once one exists
+        run: |
+          if grep -q 'sha256 "0000000000000000000000000000000000000000000000000000000000000000"' Formula/nekoshell.rb; then
+            echo "no release yet; skipping the tarball install"
+            exit 0
+          fi
+          brew install 0PrashantYadav0/nekoshell/nekoshell
+          brew test 0PrashantYadav0/nekoshell/nekoshell
+          nekoshell version
