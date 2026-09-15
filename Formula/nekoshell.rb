@@ -5,7 +5,7 @@ class Nekoshell < Formula
   desc "Catppuccin terminal rig for macOS: zsh, prompt, greeting and plugins"
   homepage "https://github.com/0PrashantYadav0/nekoshell"
   url "https://github.com/0PrashantYadav0/nekoshell/releases/download/v0.2.0/nekoshell-0.2.0.tar.gz"
-  sha256 "0000000000000000000000000000000000000000000000000000000000000000"
+  sha256 "b8d2c0d96a58537618334f2db0801cf50b2a570d625bdaae50a868a0efddb967"
   license "MIT"
   head "https://github.com/0PrashantYadav0/nekoshell.git", branch: "main"
 
